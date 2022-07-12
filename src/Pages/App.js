@@ -1,24 +1,39 @@
-import logo from '../Assets/logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import { Box, Stack, Container } from "@mui/material";
+import Card from '../Components/Card';
 
 function App() {
+  const [items, setItems] = useState([]);
+  
+  useEffect(() => {
+    fetch("https://hihl.herokuapp.com/message", { method: "GET" })
+      .then((res) => res.json())
+      .then((data) => {
+        const sortedData = data.data;
+        sortedData.sort((a, b) => {
+          let da = new Date(a.date),
+            db = new Date(b.date);
+          return db - da;
+        });
+        setItems(sortedData);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box m={2} pt={3}>
+      <Container maxWidth="xl">
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <Stack spacing={2} direction="column">
+            {items.map((x) => (
+              <Card key={x.title} title={x.title} date={x.date} />
+            ))}
+          </Stack>
+        </Box>
+      </Container>
+    </Box>
   );
 }
 
