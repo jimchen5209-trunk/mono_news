@@ -20,7 +20,7 @@ function App() {
       .catch((e) => {
         console.log(e);
       });
-  });
+  }, []);
 
   return (
     <Box m={2} pt={3}>
